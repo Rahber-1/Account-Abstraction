@@ -30,8 +30,8 @@ This project implements an **ERC-4337 Smart Contract Wallet** with support for *
 
 1. **Clone the repository**
    ```sh
-   git clone https://github.com/your-repo/erc4337-smart-account.git
-   cd erc4337-smart-account
+   git clone https://github.com/Rahber-1/Account-Abstraction.git
+   cd Account-Abstraction
    ```
 
 2. **Install dependencies**

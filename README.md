@@ -1,66 +1,108 @@
-## Foundry
+# ERC-4337 Smart Account with zkSync and Ethereum Support
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This project implements an **ERC-4337 Smart Contract Wallet** with support for **Ethereum Sepolia, zkSync Sepolia, and Local (Anvil) networks**. It includes scripts for **deployment**, **configuration**, and **sending user operations**.
 
-Foundry consists of:
+## 📂 Project Structure
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```
+├── src/
+│   ├── Ethereum/
+│   │   ├── MinimalAccount.sol  # Smart contract for ERC-4337 Minimal Account
+│   │   ├── ZkSyncMinimalAccount.sol  # Smart contract for zkSync Minimal Account
+│   ├── lib/account-abstraction/ # ERC-4337 dependencies
+│   ├── mocks/ # OpenZeppelin mocks (if needed)
+├── script/
+│   ├── DeployMinimal.s.sol  # Script to deploy MinimalAccount
+│   ├── HelperConfig.s.sol  # Network configuration helper
+│   ├── SendPackedUserOp.s.sol  # Script to sign and send user operations
+├── foundry.toml  # Foundry configuration file
+├── README.md  # Project documentation
 ```
 
-### Test
+## 🛠 Prerequisites
 
-```shell
-$ forge test
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) (for Solidity development)
+- [Node.js & NPM](https://nodejs.org/) (if integrating with frontend or scripts)
+- [OpenZeppelin Contracts](https://www.npmjs.com/package/@openzeppelin/contracts)
+- [Account Abstraction (ERC-4337)](https://github.com/eth-infinitism/account-abstraction)
+
+## 🚀 Setup
+
+1. **Clone the repository**
+   ```sh
+   git clone https://github.com/your-repo/erc4337-smart-account.git
+   cd erc4337-smart-account
+   ```
+
+2. **Install dependencies**
+   ```sh
+   forge install
+   forge install OpenZeppelin/openzeppelin-contracts
+   forge install eth-infinitism/account-abstraction
+   ```
+
+3. **Compile the contracts**
+   ```sh
+   forge build
+   ```
+
+## 🔨 Deployment
+
+### Deploy MinimalAccount on Ethereum Sepolia
+
+```sh
+forge script script/DeployMinimal.s.sol --rpc-url <SEPOLIA_RPC_URL> --private-key <YOUR_PRIVATE_KEY> --broadcast
 ```
 
-### Format
+### Deploy MinimalAccount on Local Anvil Network
 
-```shell
-$ forge fmt
+```sh
+anvil &
+forge script script/DeployMinimal.s.sol --rpc-url http://127.0.0.1:8545 --private-key <ANVIL_PRIVATE_KEY> --broadcast
 ```
 
-### Gas Snapshots
+## ⚙️ Configuration
 
-```shell
-$ forge snapshot
+The `HelperConfig.s.sol` file manages network configurations:
+
+- **Ethereum Sepolia** (chain ID `11155111`)
+- **zkSync Sepolia** (chain ID `300`)
+- **Local Anvil** (chain ID `31337`)
+
+To modify configurations, update `getEthSepoliaConfig()`, `getZksyncSepoliaConfig()`, or `getAnvilConfig()` in `HelperConfig.s.sol`.
+
+## 📩 Sending User Operations
+
+### Generate and Sign a Packed User Operation
+
+```sh
+forge script script/SendPackedUserOp.s.sol --rpc-url <NETWORK_RPC> --private-key <YOUR_PRIVATE_KEY>
 ```
 
-### Anvil
+This will:
+1. **Generate a signed user operation** using the provided sender and calldata.
+2. **Fetch the correct network entry point** from `HelperConfig`.
+3. **Sign the operation using the private key**.
 
-```shell
-$ anvil
+## 🛠 Debugging
+
+### Running Tests
+```sh
+forge test
 ```
 
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+### Foundry Debugging
+```sh
+forge test -vvvv
 ```
 
-### Cast
-
-```shell
-$ cast <subcommand>
+### Simulate a Deployment
+```sh
+forge script script/DeployMinimal.s.sol --rpc-url <NETWORK_RPC> --sig "run()"
 ```
 
-### Help
+## 📜 License
+This project is licensed under the **MIT License**.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+
+
